@@ -7,6 +7,12 @@
   "source": "https://github.com/bodgit/puppet-dbus",
   "project_page": "https://github.com/bodgit/puppet-dbus",
   "issues_url": "https://github.com/bodgit/puppet-dbus/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=4.13.0 <5.0.0"
+    }
+  ],
   "operatingsystem_support": [
     {
       "operatingsystem": "OpenBSD",
@@ -70,10 +76,7 @@
   "tags": [
     "dbus"
   ],
-  "dependencies": [
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.13.0 <5.0.0"
-    }
-  ]
+  "pdk-version": "2.1.0",
+  "template-url": "https://github.com/bodgit/pdk-templates#bodgit",
+  "template-ref": "remotes/origin/bodgit-0-g707bb17"
 }

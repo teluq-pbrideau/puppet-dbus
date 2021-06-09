@@ -12,9 +12,9 @@ class dbus::params {
   $system_dir         = "${conf_dir}/system.d"
   $validate           = false # xmllint currently can't fetch a DTD over HTTPS
 
-  case $::osfamily {
+  case $facts['os']['family'] {
     'RedHat': {
-      case $::operatingsystemmajrelease {
+      case $facts['os']['release']['major'] {
         '5', '6': {
           $service_name = 'messagebus'
         }
@@ -36,11 +36,11 @@ class dbus::params {
       $system_conf  = '/usr/local/share/dbus-1/system.conf'
     }
     default: {
-      fail("The ${module_name} module is not supported on an ${::osfamily} based system.")
+      fail("The ${module_name} module is not supported on an ${facts['os']['family']} based system.")
     }
   }
 
-  case $::dbus_startup_provider {
+  case $facts['dbus_startup_provider'] {
     'systemd': {
       $service_enable = undef
     }

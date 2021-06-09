@@ -1,5 +1,5 @@
 Facter.add('dbus_startup_provider') do
-  confine :kernel => 'Linux'
+  confine kernel: 'Linux'
   setcode do
     begin
       File.open('/proc/1/comm', &:readline).chomp
