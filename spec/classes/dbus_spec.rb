@@ -1,63 +1,72 @@
 require 'spec_helper'
 
 describe 'dbus' do
-
   context 'on unsupported distributions' do
     let(:facts) do
       {
-        :osfamily => 'Unsupported'
+        osfamily: 'Unsupported'
       }
     end
 
-    it { expect { should compile }.to raise_error(/not supported on an Unsupported/) }
+    it { is_expected.to compile.and_raise_error(%r{not supported on an Unsupported}) }
   end
 
   on_supported_os.each do |os, facts|
-    context "on #{os}", :compile do
+    context "on #{os}" do
       let(:facts) do
-        facts.merge({
-          # FIXME
-          :dbus_startup_provider => facts[:osfamily] == 'RedHat'     \
-            ? ['5', '6'].include?(facts[:operatingsystemmajrelease]) \
-              ? 'init'                                               \
-              : 'systemd'                                            \
-            : 'init',
-        })
+        facts.merge(
+          {
+            # FIXME
+            dbus_startup_provider: if facts[:osfamily] == 'RedHat'
+                                     if ['5', '6'].include?(facts[:operatingsystemmajrelease])
+                                       'init'
+                                     else
+                                       'systemd'
+                                     end
+                                   else
+                                     'init'
+                                   end,
+          },
+        )
       end
 
-      it { should contain_class('dbus') }
-      it { should contain_class('dbus::config') }
-      it { should contain_class('dbus::install') }
-      it { should contain_class('dbus::params') }
-      it { should contain_class('dbus::reload') }
-      it { should contain_class('dbus::service') }
-      it { should contain_exec('dbus-send --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig') }
-      it { should contain_file('/etc/dbus-1') }
-      it { should contain_file('/etc/dbus-1/session.d') }
-      it { should contain_file('/etc/dbus-1/session-local.conf') }
-      it { should contain_file('/etc/dbus-1/system.d') }
-      it { should contain_file('/etc/dbus-1/system-local.conf') }
-      it { should contain_package('dbus') }
+      it { is_expected.to compile.with_all_deps }
 
+      it { is_expected.to contain_class('dbus') }
+      it { is_expected.to contain_class('dbus::config') }
+      it { is_expected.to contain_class('dbus::install') }
+      it { is_expected.to contain_class('dbus::params') }
+      it { is_expected.to contain_class('dbus::reload') }
+      it { is_expected.to contain_class('dbus::service') }
+      it { is_expected.to contain_exec('dbus-send --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig') }
+      it { is_expected.to contain_file('/etc/dbus-1') }
+      it { is_expected.to contain_file('/etc/dbus-1/session.d') }
+      it { is_expected.to contain_file('/etc/dbus-1/session-local.conf') }
+      it { is_expected.to contain_file('/etc/dbus-1/system.d') }
+      it { is_expected.to contain_file('/etc/dbus-1/system-local.conf') }
+      it { is_expected.to contain_package('dbus') }
+
+      # rubocop:disable RepeatedExample
       case facts[:osfamily]
       when 'RedHat'
         case facts[:operatingsystemmajrelease]
         when '5', '6'
-          it { should contain_service('messagebus').with_enable(true) }
+          it { is_expected.to contain_service('messagebus').with_enable(true) }
         else
-          it { should contain_service('dbus').without('enable') }
+          it { is_expected.to contain_service('dbus').without('enable') }
         end
-        it { should contain_file('/etc/dbus-1/session.conf') }
-        it { should contain_file('/etc/dbus-1/system.conf') }
+        it { is_expected.to contain_file('/etc/dbus-1/session.conf') }
+        it { is_expected.to contain_file('/etc/dbus-1/system.conf') }
       when 'Debian'
-        it { should contain_service('dbus').with_enable(true) }
-        it { should contain_file('/etc/dbus-1/session.conf') }
-        it { should contain_file('/etc/dbus-1/system.conf') }
+        it { is_expected.to contain_service('dbus').with_enable(true) }
+        it { is_expected.to contain_file('/etc/dbus-1/session.conf') }
+        it { is_expected.to contain_file('/etc/dbus-1/system.conf') }
       when 'OpenBSD'
-        it { should contain_service('messagebus').with_enable(true) }
-        it { should contain_file('/usr/local/share/dbus-1/session.conf') }
-        it { should contain_file('/usr/local/share/dbus-1/system.conf') }
+        it { is_expected.to contain_service('messagebus').with_enable(true) }
+        it { is_expected.to contain_file('/usr/local/share/dbus-1/session.conf') }
+        it { is_expected.to contain_file('/usr/local/share/dbus-1/system.conf') }
       end
+      # rubocop:enable RepeatedExample
     end
   end
 end
