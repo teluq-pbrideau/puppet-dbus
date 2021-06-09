@@ -40,7 +40,7 @@ class dbus::params {
     }
   }
 
-  case $facts['dbus_startup_provider'] {
+  case $facts['service_provider'] {
     'systemd': {
       $service_enable = undef
     }
