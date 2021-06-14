@@ -1,0 +1,10 @@
+HOSTS:
+  debian-9-x64:
+    roles:
+      - master
+    platform: debian-9-amd64
+    box: generic/debian9
+    box_url: https://vagrantcloud.com/generic/boxes/debian9
+    hypervisor: vagrant
+CONFIG:
+  type: foss

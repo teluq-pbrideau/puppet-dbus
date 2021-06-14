@@ -1,0 +1,10 @@
+HOSTS:
+  centos-6-x64:
+    roles:
+      - master
+    platform: el-6-x86_64
+    box: generic/centos6
+    box_url: https://vagrantcloud.com/generic/boxes/centos6
+    hypervisor: vagrant
+CONFIG:
+  type: foss
