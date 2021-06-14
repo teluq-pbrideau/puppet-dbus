@@ -13,9 +13,6 @@
 #   configuration files.
 # @param purge_system_dir Whether to purge any unmanaged system bus
 #   configuration files.
-# @param service_enable Whether to enable the service or not. On platforms that
-#   use systemd, the dbus unit is marked static so can neither be disabled or
-#   enabled by the `service` type.
 # @param service_name The name of the service.
 # @param service_restart The command used to get `dbus-daemon` to reload its
 #   configuration, which is usually `dbus-send --system --type=method_call
@@ -42,7 +39,6 @@ class dbus (
   String               $package_name       = $dbus::params::package_name,
   Boolean              $purge_session_dir  = $dbus::params::purge_session_dir,
   Boolean              $purge_system_dir   = $dbus::params::purge_system_dir,
-  Optional[Boolean]    $service_enable     = $dbus::params::service_enable,
   String               $service_name       = $dbus::params::service_name,
   String               $service_restart    = $dbus::params::service_restart,
   Stdlib::Absolutepath $session_conf       = $dbus::params::session_conf,

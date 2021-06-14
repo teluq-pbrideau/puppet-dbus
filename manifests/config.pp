@@ -13,13 +13,21 @@ class dbus::config {
     default => undef,
   }
 
-  file { $dbus::session_conf:
-    ensure       => file,
-    owner        => 0,
-    group        => 0,
-    mode         => '0644',
-    content      => template("${module_name}/${facts['os']['family']}/session.conf.erb"),
-    validate_cmd => $validate_cmd,
+  $session_file = find_file("${module_name}/${facts['os']['name']}/${facts['os']['release']['major']}/session.conf", "${module_name}/${facts['os']['family']}/${facts['os']['release']['major']}/session.conf")
+
+  if $session_file {
+    file { $dbus::session_conf:
+      ensure       => file,
+      owner        => 0,
+      group        => 0,
+      mode         => '0644',
+      content      => file($session_file),
+      validate_cmd => $validate_cmd,
+    }
+  } else {
+    file { $dbus::session_conf:
+      ensure => absent,
+    }
   }
 
   file { $dbus::local_session_conf:
@@ -39,13 +47,21 @@ class dbus::config {
     ensure => absent,
   }
 
-  file { $dbus::system_conf:
-    ensure       => file,
-    owner        => 0,
-    group        => 0,
-    mode         => '0644',
-    content      => template("${module_name}/${facts['os']['family']}/system.conf.erb"),
-    validate_cmd => $validate_cmd,
+  $system_file = find_file("${module_name}/${facts['os']['name']}/${facts['os']['release']['major']}/system.conf", "${module_name}/${facts['os']['family']}/${facts['os']['release']['major']}/system.conf")
+
+  if $system_file {
+    file { $dbus::system_conf:
+      ensure       => file,
+      owner        => 0,
+      group        => 0,
+      mode         => '0644',
+      content      => file($system_file),
+      validate_cmd => $validate_cmd,
+    }
+  } else {
+    file { $dbus::system_conf:
+      ensure => absent,
+    }
   }
 
   file { $dbus::system_dir:

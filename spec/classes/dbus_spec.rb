@@ -35,27 +35,19 @@ describe 'dbus' do
       it { is_expected.to contain_file('/etc/dbus-1/system-local.conf') }
       it { is_expected.to contain_package('dbus') }
 
-      # rubocop:disable RepeatedExample
-      case facts[:osfamily]
-      when 'RedHat'
-        case facts[:operatingsystemmajrelease]
-        when '5', '6'
-          it { is_expected.to contain_service('messagebus').with_enable(true) }
-        else
-          it { is_expected.to contain_service('dbus').without('enable') }
-        end
-        it { is_expected.to contain_file('/etc/dbus-1/session.conf') }
-        it { is_expected.to contain_file('/etc/dbus-1/system.conf') }
-      when 'Debian'
-        it { is_expected.to contain_service('dbus').with_enable(true) }
-        it { is_expected.to contain_file('/etc/dbus-1/session.conf') }
-        it { is_expected.to contain_file('/etc/dbus-1/system.conf') }
-      when 'OpenBSD'
-        it { is_expected.to contain_service('messagebus').with_enable(true) }
-        it { is_expected.to contain_file('/usr/local/share/dbus-1/session.conf') }
-        it { is_expected.to contain_file('/usr/local/share/dbus-1/system.conf') }
+      if facts[:os]['family'].eql?('RedHat') || (facts[:os]['name'].eql?('Debian') && facts[:os]['release']['major'].eql?('8'))
+        it { is_expected.to contain_file('/etc/dbus-1/session.conf').with_ensure('file') }
+        it { is_expected.to contain_file('/etc/dbus-1/system.conf').with_ensure('file') }
+      else
+        it { is_expected.to contain_file('/etc/dbus-1/session.conf').with_ensure('absent') }
+        it { is_expected.to contain_file('/etc/dbus-1/system.conf').with_ensure('absent') }
       end
-      # rubocop:enable RepeatedExample
+
+      if facts[:os]['family'].eql?('OpenBSD') || (facts[:os]['family'].eql?('RedHat') && facts[:os]['release']['major'].eql?('6'))
+        it { is_expected.to contain_service('messagebus') }
+      else
+        it { is_expected.to contain_service('dbus') }
+      end
     end
   end
 end
