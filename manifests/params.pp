@@ -15,7 +15,7 @@ class dbus::params {
   case $facts['os']['family'] {
     'RedHat': {
       case $facts['os']['release']['major'] {
-        '5', '6': {
+        '6': {
           $service_name = 'messagebus'
         }
         default: {
