@@ -15,9 +15,7 @@ define dbus::system (
   String $application = $title,
 ) {
 
-  if ! defined(Class['dbus']) {
-    fail('You must include the dbus base class before using any dbus defined resources')
-  }
+  include dbus
 
   $validate_cmd = $dbus::validate ? {
     true    => '/usr/bin/xmllint --noout --valid %',

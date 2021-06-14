@@ -17,20 +17,10 @@ describe 'dbus::system' do
         facts
       end
 
-      context 'without dbus class included' do
-        it { is_expected.to compile.and_raise_error(%r{must include the dbus base class}) }
-      end
+      it { is_expected.to compile.with_all_deps }
 
-      context 'with dbus class included' do
-        let(:pre_condition) do
-          'include ::dbus'
-        end
-
-        it { is_expected.to compile.with_all_deps }
-
-        it { is_expected.to contain_dbus__system('test') }
-        it { is_expected.to contain_file('/etc/dbus-1/system.d/test.conf') }
-      end
+      it { is_expected.to contain_dbus__system('test') }
+      it { is_expected.to contain_file('/etc/dbus-1/system.d/test.conf') }
     end
   end
 end

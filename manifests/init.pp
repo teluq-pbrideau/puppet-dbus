@@ -33,28 +33,26 @@
 # @see puppet_defined_types::dbus::session dbus::session
 # @see puppet_defined_types::dbus::system dbus::system
 class dbus (
-  Stdlib::Absolutepath $conf_dir           = $dbus::params::conf_dir,
-  Stdlib::Absolutepath $local_session_conf = $dbus::params::local_session_conf,
-  Stdlib::Absolutepath $local_system_conf  = $dbus::params::local_system_conf,
-  String               $package_name       = $dbus::params::package_name,
-  Boolean              $purge_session_dir  = $dbus::params::purge_session_dir,
-  Boolean              $purge_system_dir   = $dbus::params::purge_system_dir,
-  String               $service_name       = $dbus::params::service_name,
-  String               $service_restart    = $dbus::params::service_restart,
-  Stdlib::Absolutepath $session_conf       = $dbus::params::session_conf,
-  Stdlib::Absolutepath $session_dir        = $dbus::params::session_dir,
-  Stdlib::Absolutepath $system_conf        = $dbus::params::system_conf,
-  Stdlib::Absolutepath $system_dir         = $dbus::params::system_dir,
-  Boolean              $validate           = $dbus::params::validate,
-) inherits dbus::params {
+  Stdlib::Absolutepath $conf_dir,
+  Stdlib::Absolutepath $local_session_conf,
+  Stdlib::Absolutepath $local_system_conf,
+  String               $package_name,
+  Boolean              $purge_session_dir,
+  Boolean              $purge_system_dir,
+  String               $service_name,
+  String               $service_restart,
+  Stdlib::Absolutepath $session_conf,
+  Stdlib::Absolutepath $session_dir,
+  Stdlib::Absolutepath $system_conf,
+  Stdlib::Absolutepath $system_dir,
+  Boolean              $validate,
+) {
 
   contain dbus::install
   contain dbus::config
   contain dbus::service
   contain dbus::reload
 
-  Class['dbus::install'] -> Class['dbus::service']
-    -> Class['dbus::reload']
-  Class['dbus::install'] -> Class['dbus::config']
-    ~> Class['dbus::reload']
+  Class['dbus::install'] -> Class['dbus::service'] -> Class['dbus::reload']
+  Class['dbus::install'] -> Class['dbus::config'] ~> Class['dbus::reload']
 }

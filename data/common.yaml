@@ -1,1 +1,14 @@
---- {}
+---
+dbus::conf_dir: '/etc/dbus-1'
+dbus::local_session_conf: '/etc/dbus-1/session-local.conf'
+dbus::local_system_conf: '/etc/dbus-1/system-local.conf'
+dbus::package_name: 'dbus'
+dbus::purge_session_dir: false
+dbus::purge_system_dir: false
+dbus::service_name: 'dbus'
+dbus::service_restart: 'dbus-send --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig'
+dbus::session_conf: '/etc/dbus-1/session.conf'
+dbus::session_dir: '/etc/dbus-1/session.d'
+dbus::system_conf: '/etc/dbus-1/system.conf'
+dbus::system_dir: '/etc/dbus-1/system.d'
+dbus::validate: false

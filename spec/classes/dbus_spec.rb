@@ -1,18 +1,6 @@
 require 'spec_helper'
 
 describe 'dbus' do
-  context 'on unsupported distributions' do
-    let(:facts) do
-      {
-        os: {
-          family: 'Unsupported',
-        },
-      }
-    end
-
-    it { is_expected.to compile.and_raise_error(%r{not supported on an Unsupported}) }
-  end
-
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do
@@ -24,7 +12,6 @@ describe 'dbus' do
       it { is_expected.to contain_class('dbus') }
       it { is_expected.to contain_class('dbus::config') }
       it { is_expected.to contain_class('dbus::install') }
-      it { is_expected.to contain_class('dbus::params') }
       it { is_expected.to contain_class('dbus::reload') }
       it { is_expected.to contain_class('dbus::service') }
       it { is_expected.to contain_exec('dbus-send --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig') }
