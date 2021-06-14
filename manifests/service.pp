@@ -1,9 +1,9 @@
 # @!visibility private
 class dbus::service {
 
-  service { $::dbus::service_name:
+  service { $dbus::service_name:
     ensure     => running,
-    enable     => $::dbus::service_enable,
+    enable     => true,
     hasstatus  => true,
     hasrestart => true,
   }

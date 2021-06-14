@@ -8,7 +8,9 @@ class dbus::params {
   $purge_session_dir  = false
   $purge_system_dir   = false
   $service_restart    = 'dbus-send --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig'
+  $session_conf       = "${conf_dir}/session.conf"
   $session_dir        = "${conf_dir}/session.d"
+  $system_conf        = "${conf_dir}/system.conf"
   $system_dir         = "${conf_dir}/system.d"
   $validate           = false # xmllint currently can't fetch a DTD over HTTPS
 
@@ -22,30 +24,15 @@ class dbus::params {
           $service_name = 'dbus'
         }
       }
-      $session_conf = "${conf_dir}/session.conf"
-      $system_conf  = "${conf_dir}/system.conf"
     }
     'Debian': {
       $service_name = 'dbus'
-      $session_conf = "${conf_dir}/session.conf"
-      $system_conf  = "${conf_dir}/system.conf"
     }
     'OpenBSD': {
       $service_name = 'messagebus'
-      $session_conf = '/usr/local/share/dbus-1/session.conf'
-      $system_conf  = '/usr/local/share/dbus-1/system.conf'
     }
     default: {
       fail("The ${module_name} module is not supported on an ${facts['os']['family']} based system.")
-    }
-  }
-
-  case $facts['service_provider'] {
-    'systemd': {
-      $service_enable = undef
-    }
-    default: {
-      $service_enable = true
     }
   }
 }
