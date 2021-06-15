@@ -78,5 +78,5 @@
   ],
   "pdk-version": "2.1.0",
   "template-url": "https://github.com/bodgit/pdk-templates#bodgit",
-  "template-ref": "remotes/origin/bodgit-0-gcc3f5ce"
+  "template-ref": "remotes/origin/bodgit-0-g9dfc0f7"
 }
