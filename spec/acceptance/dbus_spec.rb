@@ -1,43 +1,16 @@
 require 'spec_helper_acceptance'
 
+dbus_hash = dbus_settings_hash
+
 describe 'dbus' do
-  case fact('osfamily')
-  when 'RedHat'
-    group        = 'root'
-    session_conf = '/etc/dbus-1/session.conf'
-    system_conf  = '/etc/dbus-1/system.conf'
-    case fact('operatingsystemmajrelease')
-    when '5', '6'
-      service = 'messagebus'
-    else
-      service = 'dbus'
-    end
-  when 'Debian'
-    group        = 'root'
-    session_conf = '/etc/dbus-1/session.conf'
-    system_conf  = '/etc/dbus-1/system.conf'
-    service      = 'dbus'
-  when 'OpenBSD'
-    group        = 'wheel'
-    session_conf = '/usr/local/share/dbus-1/session.conf'
-    system_conf  = '/usr/local/share/dbus-1/system.conf'
-    service      = 'messagebus'
+  let(:pp) do
+    <<-MANIFEST
+      include dbus
+    MANIFEST
   end
 
-  it 'works with no errors' do
-    pp = <<-EOS
-      Package {
-        source => $::osfamily ? {
-          'OpenBSD' => "http://ftp.openbsd.org/pub/OpenBSD/${::operatingsystemrelease}/packages/amd64/",
-          default   => undef,
-        },
-      }
-
-      include ::dbus
-    EOS
-
-    apply_manifest(pp, catch_failures: true)
-    apply_manifest(pp, catch_changes: true)
+  it 'applies idempotently' do
+    idempotent_apply(pp)
   end
 
   describe package('dbus') do
@@ -48,18 +21,18 @@ describe 'dbus' do
     it { is_expected.to be_directory }
     it { is_expected.to be_mode 755 }
     it { is_expected.to be_owned_by 'root' }
-    it { is_expected.to be_grouped_into group }
+    it { is_expected.to be_grouped_into dbus_hash['group'] }
   end
 
-  describe file(session_conf) do
+  describe file('/etc/dbus-1/session.conf'), if: dbus_hash['conf_files_exist'] do
     it { is_expected.to be_file }
     it { is_expected.to be_mode 644 }
     it { is_expected.to be_owned_by 'root' }
-    it { is_expected.to be_grouped_into group }
+    it { is_expected.to be_grouped_into dbus_hash['group'] }
     its(:content) { is_expected.to match(%r{busconfig}) }
   end
 
-  describe file('/etc/dbus-1/session-local.conf') do
+  describe file('/etc/dbus-1/session.conf'), unless: dbus_hash['conf_files_exist'] do
     it { is_expected.not_to exist }
   end
 
@@ -67,18 +40,22 @@ describe 'dbus' do
     it { is_expected.to be_directory }
     it { is_expected.to be_mode 755 }
     it { is_expected.to be_owned_by 'root' }
-    it { is_expected.to be_grouped_into group }
+    it { is_expected.to be_grouped_into dbus_hash['group'] }
   end
 
-  describe file(system_conf) do
+  describe file('/etc/dbus-1/session-local.conf') do
+    it { is_expected.not_to exist }
+  end
+
+  describe file('/etc/dbus-1/system.conf'), if: dbus_hash['conf_files_exist'] do
     it { is_expected.to be_file }
     it { is_expected.to be_mode 644 }
     it { is_expected.to be_owned_by 'root' }
-    it { is_expected.to be_grouped_into group }
+    it { is_expected.to be_grouped_into dbus_hash['group'] }
     its(:content) { is_expected.to match(%r{busconfig}) }
   end
 
-  describe file('/etc/dbus-1/system-local.conf') do
+  describe file('/etc/dbus-1/system.conf'), unless: dbus_hash['conf_files_exist'] do
     it { is_expected.not_to exist }
   end
 
@@ -86,10 +63,14 @@ describe 'dbus' do
     it { is_expected.to be_directory }
     it { is_expected.to be_mode 755 }
     it { is_expected.to be_owned_by 'root' }
-    it { is_expected.to be_grouped_into group }
+    it { is_expected.to be_grouped_into dbus_hash['group'] }
   end
 
-  describe service(service) do
+  describe file('/etc/dbus-1/system-local.conf') do
+    it { is_expected.not_to exist }
+  end
+
+  describe service(dbus_hash['service']) do
     it { is_expected.to be_enabled }
     it { is_expected.to be_running }
   end
