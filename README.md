@@ -1,17 +1,15 @@
 # dbus
 
-Tested with Travis CI
-
-[![Build Status](https://travis-ci.org/bodgit/puppet-dbus.svg?branch=master)](https://travis-ci.org/bodgit/puppet-dbus)
-[![Coverage Status](https://coveralls.io/repos/bodgit/puppet-dbus/badge.svg?branch=master&service=github)](https://coveralls.io/github/bodgit/puppet-dbus?branch=master)
-[![Puppet Forge](http://img.shields.io/puppetforge/v/bodgit/dbus.svg)](https://forge.puppetlabs.com/bodgit/dbus)
-[![Dependency Status](https://gemnasium.com/bodgit/puppet-dbus.svg)](https://gemnasium.com/bodgit/puppet-dbus)
+[![Build Status](https://img.shields.io/github/workflow/status/bodgit/puppet-dbus/Test)](https://github.com/bodgit/puppet-dbus/actions?query=workflow%3ATest)
+[![Codecov](https://img.shields.io/codecov/c/github/bodgit/puppet-dbus)](https://codecov.io/gh/bodgit/puppet-dbus)
+[![Puppet Forge version](http://img.shields.io/puppetforge/v/bodgit/dbus)](https://forge.puppetlabs.com/bodgit/dbus)
+[![Puppet Forge downloads](https://img.shields.io/puppetforge/dt/bodgit/dbus)](https://forge.puppetlabs.com/bodgit/dbus)
+[![Puppet Forge - PDK version](https://img.shields.io/puppetforge/pdk-version/bodgit/dbus)](https://forge.puppetlabs.com/bodgit/dbus)
 
 #### Table of Contents
 
 1. [Description](#description)
 2. [Setup - The basics of getting started with dbus](#setup)
-    * [Setup requirements](#setup-requirements)
     * [Beginning with dbus](#beginning-with-dbus)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
@@ -22,21 +20,17 @@ Tested with Travis CI
 
 This module manages D-Bus.
 
-RHEL/CentOS, Ubuntu, Debian and OpenBSD are supported using Puppet 4.4.0 or
+RHEL/CentOS, Ubuntu, Debian and OpenBSD are supported using Puppet 5 or
 later.
 
 ## Setup
-
-### Setup Requirements
-
-You will need pluginsync enabled.
 
 ### Beginning with dbus
 
 In the very simplest case, you can just include the following:
 
 ```puppet
-include ::dbus
+include dbus
 ```
 
 ## Usage
@@ -44,9 +38,9 @@ include ::dbus
 To add the oddjob daemon to the system bus:
 
 ```puppet
-include ::dbus
+include dbus
 
-::dbus::system { 'oddjob':
+dbus::system { 'oddjob':
   content => file('oddjob/oddjob.conf'),
 }
 ```
@@ -56,28 +50,30 @@ include ::dbus
 The reference documentation is generated with
 [puppet-strings](https://github.com/puppetlabs/puppet-strings) and the latest
 version of the documentation is hosted at
-[https://bodgit.github.io/puppet-dbus/](https://bodgit.github.io/puppet-dbus/).
+[https://bodgit.github.io/puppet-dbus/](https://bodgit.github.io/puppet-dbus/)
+and available also in the [REFERENCE.md](https://github.com/bodgit/puppet-dbus/blob/main/REFERENCE.md).
 
 ## Limitations
 
-This module has been built on and tested against Puppet 4.4.0 and higher.
+This module has been built on and tested against Puppet 5 and higher.
 
 The module has been tested on:
 
-* RedHat Enterprise Linux 6/7
-* Ubuntu 14.04/16.04
-* Debian 7/8
-* OpenBSD 6.0
+* Red Hat/CentOS Enterprise Linux 6/7/8
+* Ubuntu 16.04/18.04/20.04
+* Debian 9/10
+* OpenBSD 6.9
 
 ## Development
 
-The module has both [rspec-puppet](http://rspec-puppet.com) and
-[beaker-rspec](https://github.com/puppetlabs/beaker-rspec) tests. Run them
+The module relies on [PDK](https://puppet.com/docs/pdk/1.x/pdk.html) and has
+both [rspec-puppet](http://rspec-puppet.com) and
+[Litmus](https://github.com/puppetlabs/puppet_litmus) tests. Run them
 with:
 
 ```
-$ bundle exec rake test
-$ PUPPET_INSTALL_TYPE=agent PUPPET_INSTALL_VERSION=x.y.z bundle exec rake beaker:<nodeset>
+$ bundle exec rake spec
+$ bundle exec rake litmus:*
 ```
 
 Please log issues or pull requests at
